@@ -1,4 +1,4 @@
-# Extended Kalman Filter for differential drives
+# Extended Kalman Filter for object positioning
 
 This is a toy algorithm for performing Kalman filtering on the registration of an object observed from an Autonomous Mobile Robot camera.
 
