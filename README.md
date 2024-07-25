@@ -4,4 +4,4 @@ This is a toy algorithm for performing Kalman filtering on the registration of a
 ![example use case](https://github.com/FilippoGuarda/differential_EKF/blob/main/EKF_use_case.png)
 
 Results:
-![Result of of the EKF](https://github.com/FilippoGuarda/differential_EKF/blob/main/EKF_result.png)
+![Result of of the EKF](https://github.com/FilippoGuarda/differential_EKF/blob/main/EKF_Result.png)
