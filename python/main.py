@@ -3,48 +3,53 @@ import matplotlib.pyplot as plt
 
 from ekf import EKF
 
-ekf = EKF(initial_x=0.1,initial_v=0.1,accel_variance=0.5)
-
-plt.ion()
-plt.figure()
+ekf = EKF(initial_x=np.array([0.0,0.0,0.0]),velocity_variance=np.array([0.01, 0.01, 0.01]))
 
 DT = 0.1
 NUM_STEPS = 1000
-MEAS_EVERY_N_STEPS = 20
+MEAS_EVERY_N_STEPS = 2
 
-real_x = 0.0
-real_v = 0.9
-meas_variance = 0.1**2
+
+real_x = np.array([1.0,1.0,np.pi/2])
+real_velocity = - np.array([2.0,0.0, np.pi*0.01])
+meas_variance = np.array([[1, 0.0, 0.0],
+                          [0.0, 1, 0.0],
+                          [0.0, 0.0, 0.03]])**2
+measure = np.array([0.1, 0.2, 0.3])
 
 
 
 mns = []
+meas = []
 covs = []
+track = []
 
 for step in range(NUM_STEPS):
     covs.append(ekf.cov)
     mns.append(ekf.mean)
+    meas.append(measure)
     
-    real_x = real_x + DT*real_v
+    real_x = real_x + np.array([-real_velocity[0]*np.cos(real_x[2]) - real_velocity[1]*np.sin(real_x[2]),
+                                -real_velocity[0]*np.sin(real_x[2]) - real_velocity[1]*np.cos(real_x[2]),
+                                real_velocity[2]]) * DT
     
-    ekf.predict(dt=DT)
+    ekf.predict(velocity=real_velocity*np.random.randn(3)*0.01, dt=DT)
     if step != 0 and step%MEAS_EVERY_N_STEPS == 0:
-        ekf.update(meas_value=real_x + np.random.randn()*np.sqrt(meas_variance),
+        measure = real_x + (np.eye(3)@(np.random.randn(3)))@(np.sqrt(meas_variance.T))
+        ekf.update(meas_value= measure,
                    meas_variance=meas_variance)
 
-    
-plt.subplot(2, 1, 1)
-plt.title('Position')
-plt.plot([mn[0] for mn in mns], 'r')
-plt.plot([mn[0]- 2*np.sqrt(cov[0,0]) for mn, cov in zip(mns, covs)], 'b--')
-plt.plot([mn[0]+ 2*np.sqrt(cov[0,0]) for mn, cov in zip(mns, covs)], 'b--')
 
-plt.subplot(2,1,2)
-plt.title('Velocity')
-plt.plot([mn[1] for mn in mns], 'r')
-plt.plot([mn[1]+ 2*np.sqrt(cov[1,1]) for mn, cov in zip(mns, covs)], 'b--')
-plt.plot([mn[1]- 2*np.sqrt(cov[1,1]) for mn, cov in zip(mns, covs)], 'b--')
+
+    
+mns = np.array(mns)
+meas = np.array(meas)
+
+plt.plot(meas[:, 0], meas[:,1], color='r', ls='--', lw=1)
+plt.plot(mns[:, 0], mns[:,1], color='k', lw=2)
+plt.axis('equal')
+plt.title("EKF object position")
 
 # plt.subplot(2,1,2)
-plt.show()
+
 plt.ginput(1)
