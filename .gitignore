@@ -1,1 +1,5 @@
 eigen/
+cpp/build/thirdparty/
+build/
+python/__pycache__/
+*.pyc
