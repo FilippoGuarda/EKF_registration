@@ -1,5 +1,7 @@
 eigen/
-cpp/build/thirdparty/
+cpp/build/*
 build/
+thirdparty/
 python/__pycache__/
 *.pyc
+build-cpp-Desktop-Debug/
