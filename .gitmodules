@@ -4,3 +4,6 @@
 [submodule "cpp/thirdparty/pybind11"]
 	path = cpp/thirdparty/pybind11
 	url = https://github.com/pybind/pybind11.git
+[submodule "cpp/thirdparty/eigen"]
+	path = cpp/thirdparty/eigen
+	url = https://gitlab.com/libeigen/eigen.git

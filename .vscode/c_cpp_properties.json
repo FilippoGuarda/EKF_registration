@@ -5,7 +5,8 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "/usr/include/python3.10",
-                "/home/watch/.local/lib/python3.10/site-packages/pybind11/include",
+                "${workspaceFolder}/cpp/thirdparty/pybind11",
+                "${workspaceFolder}/cpp/thirdparty/eigen",
                 "/usr/include"
             ],
             "defines": [],
