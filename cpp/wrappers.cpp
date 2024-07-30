@@ -18,7 +18,7 @@ PYBIND11_MODULE(ukf_cpp, m) {
     m.def("add", &add, "A function that adds two numbers");
 
     py::class_<UKF>(m, "UKF")
-        .def(py::init<UKF::Vector, UKF::Matrix>())
+        .def(py::init<int, int>())
         .def("predict", &UKF::predict)
         .def("update", &UKF::update);
 }
