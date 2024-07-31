@@ -11,20 +11,24 @@ ukf_file_path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(ukf_file_path + '/../cpp/build')
 
 import ukf_cpy as ukf_cpp
+from time import time
 
 
-ukf = ukf_cpp.UKF(3,3, np.ones((3,1))*0.1, np.eye(3)*100)
+
+ukf = ukf_cpp.UKF(3,3, np.ones(3)*np.array([0.1,0.1,np.pi*0.01]).T, (np.eye(3)*np.array([2,2,0.2]).T**2)*100)
+
+start = time()
 
 DT = 0.1
-NUM_STEPS = 1000
-MEAS_EVERY_N_STEPS = 2
+NUM_STEPS = 2000
+MEAS_EVERY_N_STEPS = 5
 
 
-real_x = np.array([1.0,1.0,np.pi/2])
+real_x = np.array([0.1,0.1,np.pi/2])
 real_velocity = - np.array([2.0,0.0, np.pi*0.01])
-meas_variance = np.array([[1, 0.0, 0.0],
-                          [0.0, 1, 0.0],
-                          [0.0, 0.0, 0.03]])**2
+meas_variance = np.array([[2, 0.0, 0.0],
+                          [0.0, 2, 0.0],
+                          [0.0, 0.0, 0.2]])**2
 measure = np.array([0.1, 0.2, 0.3])
 
 
@@ -56,6 +60,10 @@ for step in range(NUM_STEPS):
     
 mns = np.array(mns)
 meas = np.array(meas)
+
+end = time()
+
+print(f"total time {end-start} \n")
 
 plt.plot(meas[:, 0], meas[:,1], color='r', ls='--', lw=2)
 plt.plot(mns[:, 0], mns[:,1], color='k', lw=1)

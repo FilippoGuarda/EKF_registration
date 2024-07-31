@@ -56,7 +56,7 @@ class EKF:
         H = np.eye(3)
         
         z = meas_value
-        R = meas_variance*100
+        R = meas_variance
         y=np.zeros(3)
         
         y = self.residual(z, H@self.x)
