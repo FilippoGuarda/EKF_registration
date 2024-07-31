@@ -23,6 +23,7 @@ class EKF:
         V = np.array([[-np.cos(self.x[2]), -np.sin(self.x[2]), velocity[0]*np.sin(self.x[2])-velocity[1]*np.cos(self.x[2])],
                     [-np.sin(self.x[2]), -np.cos(self.x[2]), -velocity[0]*np.cos(self.x[2])+velocity[1]*np.sin(self.x[2])],
                     [0,0,-1]])
+        
         M = np.eye(3)*self.velocity_variance
         
         new_x = np.array([-velocity[0]*np.cos(self.x[2]) - velocity[1]*np.sin(self.x[2]),
@@ -55,7 +56,7 @@ class EKF:
         H = np.eye(3)
         
         z = meas_value
-        R = meas_variance
+        R = meas_variance*100
         y=np.zeros(3)
         
         y = self.residual(z, H@self.x)

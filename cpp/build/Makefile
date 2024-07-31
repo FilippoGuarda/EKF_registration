@@ -171,6 +171,7 @@ ukf.o: ukf.cpp.o
 
 # target to build an object file
 ukf.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ukf_cpy.dir/build.make CMakeFiles/ukf_cpy.dir/ukf.cpp.o
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/ukf.dir/build.make CMakeFiles/ukf.dir/ukf.cpp.o
 .PHONY : ukf.cpp.o
 
@@ -179,6 +180,7 @@ ukf.i: ukf.cpp.i
 
 # target to preprocess a source file
 ukf.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ukf_cpy.dir/build.make CMakeFiles/ukf_cpy.dir/ukf.cpp.i
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/ukf.dir/build.make CMakeFiles/ukf.dir/ukf.cpp.i
 .PHONY : ukf.cpp.i
 
@@ -187,6 +189,7 @@ ukf.s: ukf.cpp.s
 
 # target to generate assembly for a file
 ukf.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ukf_cpy.dir/build.make CMakeFiles/ukf_cpy.dir/ukf.cpp.s
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/ukf.dir/build.make CMakeFiles/ukf.dir/ukf.cpp.s
 .PHONY : ukf.cpp.s
 

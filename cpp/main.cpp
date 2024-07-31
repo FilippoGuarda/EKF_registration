@@ -4,12 +4,12 @@
 
 int main() {
     
-    UKF ukf(3, 3);  // 4D state (x, y, vx, vy), 2D measurement (x, y)
+    UKF ukf(3, 3, Eigen::VectorXd::Ones(3)*0.1, Eigen::MatrixXd::Identity(3,3)*10);  // 4D state (x, y, vx, vy), 2D measurement (x, y)
 
     Eigen::VectorXd Vel(3);
     Vel = Eigen::VectorXd::Zero(3);
     // Simulate some measurements
-    for (int i = 0; i < 10; ++i) {
+    for (int i = 0; i < 1000; ++i) {
 
         Vel << i*0.01, i*0.02, i*0.01;
         ukf.predict(Vel ,0.1);  // Predict with dt = 0.1
@@ -22,9 +22,9 @@ int main() {
 
         ukf.update(z);
 
-        std::cout << "Step " << i << ":" << std::endl;
-        ukf.printState();
-        std::cout << std::endl;
+         std::cout << "Step " << i << ":" << std::endl;
+         ukf.printState();
+         std::cout << std::endl;
     }
 
     return 0;

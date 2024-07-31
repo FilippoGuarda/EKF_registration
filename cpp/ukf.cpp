@@ -3,17 +3,19 @@
 
 
 // class initialization
-UKF::UKF(int state_dim, int meas_dim) : n_x(state_dim), n_z(meas_dim) {
+UKF::UKF(int state_dim, int meas_dim, Eigen::VectorXd in_vars, Eigen::MatrixXd meas_vars) 
+    : n_x(state_dim), n_z(meas_dim), in_var(in_vars), ms_var(meas_vars){
     alpha = 1e-3;
     beta = 2.0;
-    kappa = 0.2;
-    //lambda = alpha * alpha * (n_x + kappa) - n_x;
-    lambda = 0.1;
+    kappa = 0.0;
+    lambda = alpha * alpha * (n_x + kappa) - n_x;
 
     x = Eigen::VectorXd::Zero(n_x);
     P = Eigen::MatrixXd::Identity(n_x, n_x);
-    Q = Eigen::MatrixXd::Identity(n_x, n_x) * 0.1;
-    R = Eigen::MatrixXd::Identity(n_z, n_z) * 0.1;
+    // had to use the following walkaround because the compiler kept crashing wtf
+//    Q = Eigen::MatrixXd::Identity(n_x, n_x)*in_var.transpose();
+    Q = in_var.asDiagonal();
+    R = Eigen::MatrixXd::Identity(n_z, n_z)* ms_var.transpose();
 }
 
 // generation of the UKF kernel points (sigma)
@@ -48,12 +50,12 @@ Eigen::VectorXd UKF::calculateWeights() {
 }
 
 // TODO: Update model to the robot's one
-Eigen::VectorXd UKF::processModel(Eigen::VectorXd Vel, const Eigen::VectorXd& x, double dt) {
+Eigen::VectorXd UKF::processModel(Eigen::VectorXd& Vel, const Eigen::VectorXd& x, double dt) {
 
     Eigen::VectorXd x_pred = x;
-    x_pred(0) += x(0) * Vel(0)*dt; // x = x + vx * dt
-    x_pred(1) += x(1) + Vel(1)*std::sin(x(1))* dt; // y = y + sin(theta) * dt
-    x_pred(2) = x(2) + Vel(2)*dt; // theta = theta + 0.01dt
+    x_pred(0) += (-Vel(0)*std::cos(x(2)) -Vel(1)*std::sin(x(2)))*dt; // x = x + vx * dt
+    x_pred(1) += (-Vel(0)*std::sin(x(2)) -Vel(1)*std::cos(x(2)))*dt; // y = y + sin(theta) * dt
+    x_pred(2) +=  -Vel(2)*dt; // theta = theta + 0.01dt
     return x_pred;
 }
 
@@ -88,7 +90,7 @@ void UKF::predict(Eigen::VectorXd& Vel, double dt) {
     P += Q;
 }
 
-void UKF::update(const Eigen::VectorXd& z_measurement) {
+void UKF::update(Eigen::VectorXd& z_measurement) {
     // Generate sigma points
     Eigen::MatrixXd sigma_points = generateSigmaPoints(x, P);
     Eigen::VectorXd weights = calculateWeights();
@@ -123,6 +125,16 @@ void UKF::update(const Eigen::VectorXd& z_measurement) {
     // Update state and covariance
     x += K * (z_measurement - z_pred);
     P -= K * S * K.transpose();
+}
+
+
+// remember to add the eigen includes in the pybind wrapper!!
+Eigen::VectorXd UKF::mean() const{
+    return x;
+}
+
+Eigen::MatrixXd UKF::cov() const{
+    return P;
 }
 
 void UKF::printState() {
